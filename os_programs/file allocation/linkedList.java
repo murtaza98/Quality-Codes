@@ -3,6 +3,54 @@ import java.lang.*;
 import java.io.*;
 
 
+class FileAllocTable{
+	ArrayList<FileTableEntry> tableEntries;
+
+	FileAllocTable(){
+		tableEntries = new ArrayList();
+	}
+
+	public void addEntry(int file_no,int start){
+		FileTableEntry entry = new FileTableEntry(file_no,start);
+		tableEntries.add(entry);
+	}
+
+	public void removeEntry(int file_no){
+		for(FileTableEntry entry : tableEntries){
+			if(entry.getFileNo() == file_no){
+				tableEntries.remove(entry);
+				break;
+			}
+		}
+	}
+
+	public void printAllocTable(){
+		System.out.println("File no\t\tStart Entry block");
+		for(FileTableEntry entry:tableEntries){
+			System.out.println(entry);
+		}
+	}
+}
+
+class FileTableEntry{
+	int file_no;
+	int start;
+	
+	FileTableEntry(int file_no,int start){
+		this.file_no = file_no;
+		this.start = start;
+	}
+
+	public int getFileNo(){
+		return this.file_no;
+	}
+
+	public String toString(){
+		return this.file_no + "\t\t" + this.start;
+	}
+}
+
+
 class Block{
 	int file_no;
 	Block next_block_reference;
@@ -35,6 +83,7 @@ class Disk{
 	Block[] disk;
 	int disk_size;
 	int disk_free_space;
+	FileAllocTable allocationTable;
 
 	Disk(int size){
 		this.disk = new Block[size];
@@ -43,6 +92,7 @@ class Disk{
 		}
 		this.disk_size = size;
 		this.disk_free_space = size;
+		allocationTable = new FileAllocTable();
 	}
 
 
@@ -57,6 +107,9 @@ class Disk{
 				disk[i].setFileNo(file_no);
 				if(prev_block!=null){
 					prev_block.setNextBlockReference(disk[i]);
+				}else{
+					//this is the first block so update the allocation table
+					allocationTable.addEntry(file_no,i);
 				}
 				prev_block = disk[i];
 				no_blocks--;
@@ -76,6 +129,10 @@ class Disk{
 				disk_free_space++;
 			}
 		}
+		if(found){
+			//remove entry of the file from allocation table
+			allocationTable.removeEntry(file_no);
+		}
 		return found;
 	}
 
@@ -84,6 +141,10 @@ class Disk{
 			System.out.print(disk[i].getFileNo()+"  ");
 		}
 		System.out.println();
+	}
+
+	public void printAllocTable(){
+		allocationTable.printAllocTable();
 	}
 
 }
@@ -98,11 +159,11 @@ class linkedList
 		int size = 16;
 		Disk disk = new Disk(size);
 		int file_no = 1;
-
+		System.out.println("Disk structure");
 		disk.printDisk();
 		
 		while(true){
-			System.out.println("Enter Choice\n1:-Insert\n2:-Delete\n3:-Exit");
+			System.out.println("\nEnter Choice\n1:-Insert\n2:-Delete\n3:-Exit");
 			int choice = Integer.parseInt(br.readLine());
 			switch(choice){
 				case 1:
@@ -110,10 +171,13 @@ class linkedList
 					int no_blocks = Integer.parseInt(br.readLine());
 					boolean allocationSuccess = disk.allocateBlocks(no_blocks,file_no++);
 					if(allocationSuccess){
-						System.out.println("Block allocation success");
+						System.out.println("\nBlock allocation success");
+						System.out.println("\nDisk structure");
 						disk.printDisk();
+						System.out.println("\nFile allocation table");
+						disk.printAllocTable();
 					}else{
-						System.out.println("Block allocation failed");
+						System.out.println("\nBlock allocation failed");
 						//to reuse the file_no
 						file_no--;
 					}
@@ -126,10 +190,14 @@ class linkedList
 					boolean removalStatus = disk.removeFile(remove_file_no);
 					disk.printDisk();
 					if(removalStatus){
-						System.out.println("Block allocation success");
+						System.out.println("\nFile Deleted");
+						System.out.println("\nDisk structure");
+						disk.printDisk();
+						System.out.println("\nFile allocation table");
+						disk.printAllocTable();
 						disk.printDisk();
 					}else{
-						System.out.println("Block allocation failed");
+						System.out.println("\nBlock allocation failed");
 					}
 					break;
 				case 3:
