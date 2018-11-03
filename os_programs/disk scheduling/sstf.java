@@ -34,21 +34,23 @@ class sstf
 
 		int total_seek_length = 0;
 
+		System.out.println("Seek No\t\tStart\t\tEnd\t\tSeek Length");
+
 		for(int i = 0; i < no_tracks;i++){
 
 			int nextTrackIndex = getNearestTrackIndex(tracks,head);
 
 			int seek = Math.abs(head-tracks[nextTrackIndex]);
 			total_seek_length += seek;
-			System.out.println("Seek no " + (i+1) + " from " + head + " till " + tracks[nextTrackIndex] + "   Seek Length " + seek);
+			System.out.println((i+1) + "\t\t" + head + "\t\t" + tracks[nextTrackIndex] + "\t\t" + seek);
 			
 			head = tracks[nextTrackIndex];
 
-			removeTrack(tracks,nextTrackIndex);
+			tracks = removeElementByIndex(tracks,nextTrackIndex);
 
 		}
 
-		System.out.println("Total Seek Length " + total_seek_length + "\nAverage Seek Length " + (total_seek_length/no_tracks));
+		System.out.println("\nTotal Seek Length " + total_seek_length + "\nAverage Seek Length " + ((float)total_seek_length/no_tracks));
 	}
 
 
@@ -67,7 +69,16 @@ class sstf
 		return shorest_seek_index;
 	}
 
-	public static void removeTrack(int[] tracks,int removeIndex){
-		System.arraycopy(tracks,removeIndex+1,tracks,removeIndex,tracks.length-1-removeIndex);
+	public static int[] removeElementByIndex(int[] tracks,int removeIndex){
+		int[] new_track = new int[tracks.length-1];
+
+		for(int i = 0,new_track_pointer = 0;i<tracks.length;i++){
+			if(i!=removeIndex){
+				new_track[new_track_pointer++] = tracks[i];
+			}
+		}
+
+		return new_track;
+
 	}
 }

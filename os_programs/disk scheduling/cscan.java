@@ -49,10 +49,12 @@ class cscan
 		int prev_head=head;
 		int seek_buffer = 0;
 
+		System.out.println("Seek No\t\tStart\t\tEnd\t\tSeek Length");
+
 		for(int seek_no = 1;no_tracks_left>0;head+=direction){
 			if(tape[head] == 1){
 				tape[head] = 0;
-				System.out.println("Seek "+seek_no+ " from "+prev_head+" upto "+head + "\tSeek length "+seek_buffer);
+				System.out.println((seek_no) + "\t\t" + prev_head + "\t\t" + head + "\t\t" + seek_buffer);
 				total_seek_length+=seek_buffer;
 				prev_head = head;
 				seek_buffer = 0;
@@ -62,13 +64,15 @@ class cscan
 			}
 
 			if(direction == 1 && head == tape_end){
+				seek_buffer+=(tape_end-tape_start+1);
 				head = tape_start;
 			}else if(direction == -1 && head == tape_start){
+				seek_buffer+=(tape_end-tape_start+1);
 				head = tape_end;
 			}
 
 			seek_buffer++;
 		}
-		System.out.println("Total Seek Length " + total_seek_length + "\nAverage Seek Length " + (total_seek_length/no_tracks));	
+		System.out.println("Total Seek Length " + total_seek_length + "\nAverage Seek Length " + ((float)total_seek_length/no_tracks));	
 	}
 }
