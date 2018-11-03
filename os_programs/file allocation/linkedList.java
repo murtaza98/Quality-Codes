@@ -188,7 +188,6 @@ class linkedList
 					System.out.println("Enter the file no to be removed");
 					int remove_file_no = Integer.parseInt(br.readLine());
 					boolean removalStatus = disk.removeFile(remove_file_no);
-					disk.printDisk();
 					if(removalStatus){
 						System.out.println("\nFile Deleted");
 						System.out.println("\nDisk structure");

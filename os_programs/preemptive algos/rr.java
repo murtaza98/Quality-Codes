@@ -203,7 +203,7 @@ class Input
 class Time
 {
 	int current_time = 0;
-	int max_time = 20;
+	int max_time = 15;
 	int time_quantum = 3;
 	public Time(){
 

@@ -207,7 +207,7 @@ class Input {
 
 class Time{
 	int current_time = 0;
-	int max_time = 40;
+	int max_time = 20;
 	public Time(){
 
 	}
@@ -229,7 +229,7 @@ class InputThread extends Thread
 {
 	Input ip;
 	Time time;
-	int max_process_to_schedule = 15;
+	int max_process_to_schedule = 8;
 	int max_burst_time = 7;
 
 	public InputThread(Input ip,Time time){
