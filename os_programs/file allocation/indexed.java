@@ -32,6 +32,19 @@ class Block{
 	public int getFileNo(){
 		return this.file_no;
 	}
+
+	public boolean isReferenceValid(){
+		return !reference.isEmpty();
+	}
+
+	public void printBlock(){
+		System.out.print("no "+this.file_no+" ---> ");
+		for(int i:reference){
+			System.out.print(" "+i+",");
+		}
+		System.out.println();
+	}
+
 }
 
 
@@ -95,6 +108,12 @@ class Disk{
 			System.out.print(disk[i].getFileNo()+"  ");
 		}
 		System.out.println();
+		//print file allocation table
+		for(int i=0;i<this.disk_size;i++){
+			if(disk[i].isReferenceValid()){
+				disk[i].printBlock();
+			}
+		}
 	}
 
 }
@@ -119,7 +138,7 @@ class indexed
 				case 1:
 					System.out.println("Enter the no of disk blocks");
 					int no_blocks = Integer.parseInt(br.readLine());
-					boolean allocationSuccess = disk.allocateBlocks(no_blocks,file_no++);
+					boolean allocationSuccess = disk.allocateBlocks(no_blocks+1,file_no++);
 					if(allocationSuccess){
 						System.out.println("Block allocation success");
 						disk.printDisk();
