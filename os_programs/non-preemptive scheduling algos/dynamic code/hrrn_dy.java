@@ -96,6 +96,10 @@ class Input
 		this.completedProcess = new SortedList(new SortByResponseRatio(time));
 	}
 
+	public int getNoProcess(){
+		return completedProcess.size();
+	}
+
 	public SortedList getNewQueue(){
 		return this.newQueue;
 	}
@@ -150,12 +154,22 @@ class Input
 	}
 
 	public void printAllProcessSummary(){
+		int sum_tat = 0;
+		int sum_wt = 0;
 		Iterator i = newQueue.iterator();
 		System.out.println("ALL PROCESS");
 		while(i.hasNext()){
 			Process p =(Process)i.next();
+			sum_tat += p.getTAT();
+			sum_wt += p.getWT();
 			System.out.println(p);
 		}
+
+		float average_tat = (float)sum_tat/this.getNoProcess();
+		float average_wt = (float)sum_wt/this.getNoProcess();
+
+		System.out.println("\nAverage TAT "+average_tat+"\nAverage WT "+average_wt);
+
 	}
 }
 
@@ -210,6 +224,8 @@ class Process
 	int arrival_time;
 	int burst_time;
 	int completion_time;
+	int tat = -1;
+	int wt = -1;
 
 	public Process(int pid,int arrival_time,int burst_time){
 		this.pid=pid;
@@ -228,8 +244,16 @@ class Process
 	public void setCompletionTime(int completion_time){
 		this.completion_time = completion_time;
 	}
+	public int getTAT(){
+		return this.tat;
+	}
+	public int getWT(){
+		return this.wt;
+	}
   public String toString(){
-    return "PID "+this.pid +" AT " + this.arrival_time + " BT "+this.burst_time;
+  	this.tat = this.completion_time-this.arrival_time;
+  	this.wt = tat-this.burst_time;
+    return "PID "+this.pid +" AT " + this.arrival_time + " BT "+this.burst_time+" TAT "+tat+" WT "+wt;
   }
 }
 

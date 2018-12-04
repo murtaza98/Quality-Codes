@@ -146,7 +146,6 @@ class Disk{
 	public void printAllocTable(){
 		allocationTable.printAllocTable();
 	}
-
 }
 
 

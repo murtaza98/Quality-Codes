@@ -45,7 +45,7 @@ class dining
 		Philosoper p2 = new Philosoper(food,f2,f1,2);
 		Philosoper p3 = new Philosoper(food,f3,f2,3);
 		Philosoper p4 = new Philosoper(food,f4,f3,4);
-		Philosoper p5 = new Philosoper(food,f4,f5,5);
+		Philosoper p5 = new Philosoper(food,f5,f4,5);
 
 
 		p1.start();

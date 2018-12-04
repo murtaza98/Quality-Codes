@@ -48,7 +48,14 @@ class Container{
 	}	
 }
 
-class Consumer extends Thread
+
+interface Element{
+	static int pid = -1;
+}
+
+
+
+class Consumer extends Thread implements Element
 {
 	Custom_Semaphore mutex;
 	Custom_Semaphore empty;
@@ -75,7 +82,7 @@ class Consumer extends Thread
 	}
 }
 
-class Producer extends Thread
+class Producer extends Thread implements Element
 {
 	
 	Custom_Semaphore mutex;
@@ -106,8 +113,8 @@ class Custom_Semaphore{
 	//true means occupied, false means not occupied 
 	int count;
 	String currentLock = "none";
-	ArrayList<Producer> queueProducer = new ArrayList();
-	ArrayList<Consumer> queueConsumer = new ArrayList();
+
+	ArrayList<Element> queue = new ArrayList();
 
 	Custom_Semaphore(int capacity){
 		this.count = capacity;
@@ -116,7 +123,7 @@ class Custom_Semaphore{
 	public void sem_wait(Consumer consumer){
 		this.count--;
 		if(this.count<0){
-			queueConsumer.add(consumer);
+			queue.add(consumer);
 			consumer.suspend();
 		}		
 	}
@@ -124,7 +131,7 @@ class Custom_Semaphore{
 	public void sem_wait(Producer producer){
 		this.count--;
 		if(this.count<0){
-			queueProducer.add(producer);
+			queue.add(producer);
 			producer.suspend();
 		}
 	}
@@ -133,11 +140,22 @@ class Custom_Semaphore{
 		this.count++;
 		if(this.count<=0){
 			if(caller.equals("Producer")){
-				Consumer consumer = queueConsumer.remove(0);
-				consumer.resume();
+				for(Element e:queue){
+					if(e instanceof Consumer){
+						Consumer consumer = (Consumer)queue.remove(0);
+						consumer.resume();
+						break;
+					}
+				}
+				
 			}else{
-				Producer producer = queueProducer.remove(0);
-				producer.resume();
+				for(Element e:queue){
+					if(e instanceof Producer){
+						Producer producer = (Producer)queue.remove(0);
+						producer.resume();
+						break;
+					}
+				}
 			}
 		}
 	}	

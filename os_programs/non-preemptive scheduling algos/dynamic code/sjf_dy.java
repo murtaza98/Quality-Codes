@@ -155,6 +155,13 @@ class Input {
 			Process p =(Process)i.next();
 			System.out.println(p);
 		}
+
+		int average_tat = 0;
+		int average_wt = 0;
+		while(i.hasNext()){
+			
+		}
+
 	}
 }
 
@@ -209,6 +216,8 @@ class Process
 	int arrival_time;
 	int burst_time;
 	int completion_time;
+	int tat = -1;
+	int wt = -1;
 
 	public Process(int pid,int arrival_time,int burst_time){
 		this.pid=pid;
@@ -227,8 +236,16 @@ class Process
 	public void setCompletionTime(int completion_time){
 		this.completion_time = completion_time;
 	}
+	public int getTAT(){
+		return this.tat;
+	}
+	public int getWT(){
+		return this.wt;
+	}
   public String toString(){
-    return "PID "+this.pid +" AT " + this.arrival_time + " BT "+this.burst_time;
+  	this.tat = this.completion_time-this.arrival_time;
+  	this.wt = tat-this.burst_time;
+    return "PID "+this.pid +" AT " + this.arrival_time + " BT "+this.burst_time+" TAT "+tat+" WT "+wt;
   }
 }
 
